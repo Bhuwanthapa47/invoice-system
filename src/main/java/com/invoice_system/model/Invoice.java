@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "invoices")
@@ -18,14 +20,34 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     private String invoiceNumber;
     private String clientName;
-    private double amount;
     private LocalDate invoiceDate;
-
+    private double gstPercentage;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus status;
+
+
+
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InvoiceItem> items = new ArrayList<>();
+
+    @Transient
+    public double getSubTotal() {
+        return items.stream().mapToDouble(InvoiceItem::getTotalPrice).sum();
+    }
+
+    @Transient
+    public double getTotalAmount() {
+        return getSubTotal() + (getSubTotal() * gstPercentage / 100.0);
+    }
+
+
 }

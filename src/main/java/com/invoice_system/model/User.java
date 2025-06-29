@@ -1,5 +1,6 @@
 package com.invoice_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,6 @@ public class User {
     private String role; // "ROLE_USER" or "ROLE_ADMIN"
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private Set<Invoice> invoices;
 }
