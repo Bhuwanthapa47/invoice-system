@@ -3,6 +3,7 @@ package com.invoice_system.controller;
 import com.invoice_system.dto.UserDTO;
 import com.invoice_system.dto.UserResponseDTO;
 import com.invoice_system.model.Invoice;
+import com.invoice_system.model.InvoiceStatus;
 import com.invoice_system.model.User;
 import com.invoice_system.repository.InvoiceRepository;
 import com.invoice_system.repository.UserRepository;
@@ -170,18 +171,37 @@ public class UserController {
             Model model,
             Authentication authentication,
             @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "sort", required = false, defaultValue = "desc") String sortOrder
+            @RequestParam(value = "sort", required = false, defaultValue = "desc") String sortOrder,
+            @RequestParam(value = "status", required = false) String status
     ) {
         String username = authentication.getName();
 
         List<Invoice> invoices;
+
         if (search != null && !search.isEmpty()) {
             invoices = invoiceRepository.findByUserUsernameAndClientNameContainingIgnoreCase(username, search);
         } else {
             invoices = invoiceRepository.findByUserUsername(username);
         }
 
-        // Sort based on date
+        // ✅ Filter by status if provided
+        if (status != null && !status.isBlank()) {
+            try {
+                InvoiceStatus selectedStatus = InvoiceStatus.valueOf(status.trim().toUpperCase());
+                invoices = invoices.stream()
+                        .filter(inv -> inv.getStatus() == selectedStatus)
+                        .toList();
+                model.addAttribute("selectedStatus", status);
+            } catch (IllegalArgumentException e) {
+                // Log this if needed
+                model.addAttribute("selectedStatus", ""); // fallback
+            }
+        } else {
+            model.addAttribute("selectedStatus", "");
+        }
+
+
+        // ✅ Sort based on date
         if ("asc".equalsIgnoreCase(sortOrder)) {
             invoices.sort(Comparator.comparing(Invoice::getInvoiceDate));
         } else {
@@ -197,6 +217,9 @@ public class UserController {
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("search", search);
         model.addAttribute("sortOrder", sortOrder);
+
+        // ✅ Send all status values to Thymeleaf
+        model.addAttribute("statusValues", InvoiceStatus.values());
 
         return "user/dashboard";
     }
