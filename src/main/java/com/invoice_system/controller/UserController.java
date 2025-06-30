@@ -63,7 +63,7 @@ public class UserController {
     }
 
 
-    // 🟢 Dashboard for USER
+    // 🟢 Dashboard for Admin
     @GetMapping("/dashboard")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String dashboard(Model model) {

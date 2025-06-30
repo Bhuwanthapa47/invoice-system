@@ -22,8 +22,6 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -37,14 +35,19 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(customLoginSuccessHandler) // ✅ use custom handler
+                        .successHandler(customLoginSuccessHandler)
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout") // 🔁 redirect to login page with ?logout param
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                );
 
         return http.build();
     }
-
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
@@ -59,5 +62,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
