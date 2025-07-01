@@ -9,6 +9,7 @@
 <body class="bg-gray-100">
 
 <div layout:fragment="content" class="max-w-7xl mx-auto px-6 py-8">
+
     <!-- 🧑‍💼 Header with Logout -->
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold text-gray-800">Welcome to the Admin Dashboard 👨‍💼</h2>
@@ -20,7 +21,6 @@
         </form>
     </div>
 
-
     <!-- 📊 Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         <div class="bg-white shadow-md rounded-xl p-6">
@@ -30,7 +30,7 @@
         <div class="bg-white shadow-md rounded-xl p-6">
             <h4 class="text-lg font-medium text-gray-600">💰 Total Amount (₹)</h4>
             <p class="mt-2 text-4xl font-bold text-green-600"
-               th:text="|${#numbers.formatDecimal(totalAmount, 1, 'POINT', 2, 'NONE')}|">₹0.00</p>
+               th:text="|₹${T(java.lang.String).format('%.2f', totalAmount)}|">₹0.00</p>
         </div>
     </div>
 
@@ -66,9 +66,9 @@
                 <td class="px-6 py-4" th:text="${inv.clientName}">Client</td>
                 <td class="px-6 py-4" th:text="${inv.invoiceDate}">2025-06-28</td>
                 <td class="px-6 py-4 text-gray-800"
-                    th:text="|${#numbers.formatDecimal(inv.subTotal, 1, 'POINT', 2, 'NONE')}|">1000.00</td>
+                    th:text="|₹${T(java.lang.String).format('%.2f', inv.subTotal)}|">₹1000.00</td>
                 <td class="px-6 py-4 text-green-700 font-medium"
-                    th:text="|${#numbers.formatDecimal(inv.totalAmount, 1, 'POINT', 2, 'NONE')}|">1180.00</td>
+                    th:text="|₹${T(java.lang.String).format('%.2f', inv.totalAmount)}|">₹1180.00</td>
                 <td class="px-6 py-4">
                     <a th:href="@{'/invoices/' + ${inv.id} + '/download'}"
                        target="_blank"
