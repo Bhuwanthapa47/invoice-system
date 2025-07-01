@@ -7,11 +7,13 @@ import com.invoice_system.model.InvoiceStatus;
 import com.invoice_system.model.User;
 import com.invoice_system.repository.InvoiceRepository;
 import com.invoice_system.repository.UserRepository;
+import com.invoice_system.service.EmailService;
 import com.invoice_system.service.InvoiceService;
 import com.invoice_system.service.PDFGeneratorService;
 import com.invoice_system.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -38,6 +40,9 @@ public class UserController {
     private final PDFGeneratorService pdfGeneratorService;
     private final UserService userService;
     private final InvoiceService invoiceService;
+    @Autowired
+    private EmailService emailService;
+
 
     // 🔒 Helper method to get the logged-in User
     private User getLoggedInUser(Authentication authentication) {
@@ -285,5 +290,38 @@ public class UserController {
                 .orElse("error/403"); // or redirect to access denied
     }
 
-    
+    @GetMapping("/user/invoices/{id}/email")
+    @PreAuthorize("hasRole('USER')")
+    public String emailInvoiceToClient(@PathVariable Long id, Authentication auth, RedirectAttributes redirectAttributes) {
+        Invoice invoice = invoiceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Invoice ID"));
+
+        // Only allow if invoice belongs to logged-in user
+        if (!invoice.getUser().getUsername().equals(auth.getName())) {
+            redirectAttributes.addFlashAttribute("error", "Unauthorized access.");
+            return "redirect:/user/invoice-page";
+        }
+
+        // Generate PDF
+        ByteArrayInputStream pdf = pdfGeneratorService.generateInvoicePDF(invoice);
+        byte[] pdfBytes = pdf.readAllBytes();
+
+        try {
+            emailService.sendInvoiceEmail(
+                    invoice.getUser().getEmail(),
+                    "Your Invoice: " + invoice.getInvoiceNumber(),
+                    "Dear " + invoice.getClientName() + ",\n\nPlease find your invoice attached.\n\nThanks!",
+                    pdfBytes
+            );
+            redirectAttributes.addFlashAttribute("msg", "Invoice emailed successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Failed to send email.");
+        }
+
+        return "redirect:/user/invoice-page";
+    }
+
+
+
 }

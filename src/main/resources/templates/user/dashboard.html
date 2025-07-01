@@ -188,11 +188,13 @@
 
 
                 <td class="px-6 py-4 space-x-2">
-                    <a th:href="@{'/user/invoices/' + ${inv.id}}"
-                       class="text-indigo-600 hover:underline">👁 View</a>
+                    <a th:href="@{'/user/invoices/' + ${inv.id}}" class="text-indigo-600 hover:underline">👁 View</a>
                     <a th:href="@{'/user/invoices/' + ${inv.id} + '/download'}" target="_blank"
                        class="text-green-600 hover:underline">📥 Download</a>
+                    <a th:href="@{'/user/invoices/' + ${inv.id} + '/email'}"
+                       class="text-blue-600 hover:underline">📧 Email</a>
                 </td>
+
             </tr>
             </tbody>
         </table>
