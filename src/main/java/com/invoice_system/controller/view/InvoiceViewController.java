@@ -81,6 +81,7 @@ public class InvoiceViewController {
             invoice.setClientName(dto.getClientName());
             invoice.setGstPercentage(dto.getGstPercentage());
             invoice.setInvoiceDate(dto.getInvoiceDate());
+            invoice.setDueDate(dto.getDueDate()); // ✅ ADD THIS LINE
             invoice.setUser(userOpt.get());
             invoice.setStatus(dto.getStatus());
 
@@ -107,6 +108,7 @@ public class InvoiceViewController {
             return "invoice/create";
         }
     }
+
 
     // 🔹 Download invoice PDF
     @GetMapping("/{id}/download")
@@ -142,6 +144,7 @@ public class InvoiceViewController {
         dto.setClientName(invoice.getClientName());
         dto.setGstPercentage(invoice.getGstPercentage());
         dto.setInvoiceDate(invoice.getInvoiceDate());
+        dto.setDueDate(invoice.getDueDate());
 
         model.addAttribute("invoice", dto);
         model.addAttribute("invoiceId", id);
@@ -167,6 +170,7 @@ public class InvoiceViewController {
         invoice.setClientName(dto.getClientName());
         invoice.setGstPercentage(dto.getGstPercentage());
         invoice.setInvoiceDate(dto.getInvoiceDate());
+        invoice.setDueDate(dto.getDueDate());
         invoice.setStatus(dto.getStatus());
 
         invoiceRepository.save(invoice);

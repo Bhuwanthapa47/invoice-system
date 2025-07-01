@@ -59,6 +59,11 @@
                 <input type="date" th:field="*{invoiceDate}" required class="w-full mt-1 p-2 border rounded-md" />
             </div>
             <div>
+                <label class="block text-gray-700 font-medium">📅 Due Date</label>
+                <input type="date" name="dueDate" th:field="*{dueDate}" class="w-full mt-1 p-2 border rounded-md" />
+            </div>
+
+            <div>
                 <label class="block text-gray-700 font-medium">Invoice Status</label>
                 <select th:field="*{status}" required class="w-full mt-1 p-2 border rounded-md">
                     <option value="PAID">Paid</option>

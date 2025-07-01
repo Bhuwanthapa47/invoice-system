@@ -36,6 +36,10 @@ public class Invoice {
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
+    @Column(name = "due_date")
+    private LocalDate dueDate;
+
+
 
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)

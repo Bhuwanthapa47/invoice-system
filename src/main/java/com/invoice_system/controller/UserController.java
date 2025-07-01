@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayInputStream;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -187,7 +188,7 @@ public class UserController {
             invoices = invoiceRepository.findByUserUsername(username);
         }
 
-        // 🟡 Safe Status Filter
+        // 🟡 Status Filter
         if (status != null && !status.isBlank()) {
             try {
                 InvoiceStatus selectedStatus = InvoiceStatus.valueOf(status.trim().toUpperCase());
@@ -210,15 +211,25 @@ public class UserController {
             invoices.sort(Comparator.comparing(Invoice::getInvoiceDate).reversed());
         }
 
-        // 💰 Total & Status Counts
+        // 💰 Total Amount & Status Counts
         double totalAmount = invoices.stream()
                 .mapToDouble(Invoice::getTotalAmount)
                 .sum();
-
         long paidCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.PAID).count();
         long unpaidCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.UNPAID).count();
 
+        // ⏰ Payment Due Reminder: Invoices due within next 3 days
+        LocalDate today = LocalDate.now();
+        LocalDate in3Days = today.plusDays(3);
+        List<Invoice> dueSoon = invoices.stream()
+                .filter(i -> i.getDueDate() != null &&
+                        !i.getDueDate().isBefore(today) &&
+                        !i.getDueDate().isAfter(in3Days) &&
+                        i.getStatus() != InvoiceStatus.PAID)
+                .collect(Collectors.toList());
+        model.addAttribute("dueSoonCount", dueSoon.size());
 
+        // 📦 Model attributes
         model.addAttribute("username", username);
         model.addAttribute("invoices", invoices);
         model.addAttribute("totalAmount", totalAmount);
@@ -229,9 +240,9 @@ public class UserController {
         model.addAttribute("paidCount", paidCount);
         model.addAttribute("unpaidCount", unpaidCount);
 
-
         return "user/dashboard";
     }
+
 
 
 

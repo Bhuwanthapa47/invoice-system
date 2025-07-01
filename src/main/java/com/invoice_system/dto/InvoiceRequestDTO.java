@@ -15,6 +15,8 @@ public class InvoiceRequestDTO {
     private LocalDate invoiceDate;
     private double gstPercentage;
     private InvoiceStatus status;
+    private LocalDate dueDate;
+
 
     // getter and setter
     public InvoiceStatus getStatus() {

@@ -1,6 +1,7 @@
 package com.invoice_system.repository;
 
 import com.invoice_system.model.Invoice;
+import com.invoice_system.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,6 +40,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     List<Invoice> findByUser_Username(String username);
 
     List<Invoice> findByUserUsernameAndClientNameContainingIgnoreCase(String username, String clientName);
+
+    List<Invoice> findByUserAndDueDateBetween(User user, LocalDate start, LocalDate end);
 
 
 }
