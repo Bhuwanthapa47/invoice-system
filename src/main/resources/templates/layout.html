@@ -1,19 +1,78 @@
-<!-- layout.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      th:lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Invoice System</title>
+    <title>Invoice System By Bhuwan Thapa</title>
+
+    <!-- Tailwind config for class-based dark mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS (optional) -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
-<header><h1>Invoice System</h1></header>
 
-<main layout:fragment="content">
-    <!-- dynamic content will be injected here -->
+<!-- ✅ DO NOT use class="dark" here. Tailwind applies it via JS -->
+<body class="bg-white text-black min-h-screen flex flex-col transition-colors duration-300">
+
+<!-- Header -->
+<header class="p-4 bg-gray-100 dark:bg-gray-800 flex justify-between items-center shadow">
+    <h1 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-1">
+        🧾 Invoice System
+    </h1>
+
+    <!-- Dark‑mode toggle button stays the same -->
+    <button id="theme-toggle"
+            class="px-3 py-1 rounded bg-gray-700 text-white dark:bg-yellow-400 dark:text-black text-sm transition">
+        🌙 Dark Mode
+    </button>
+</header>
+
+
+<!-- Main Content -->
+<main layout:fragment="content" class="flex-1 p-4">
+    <!-- Thymeleaf will inject content here -->
 </main>
 
-<footer><p>© 2025 Invoice System</p></footer>
+<!-- Footer -->
+<footer class="p-4 bg-gray-200 dark:bg-gray-800 text-center text-sm text-gray-600 dark:text-gray-300">
+    © 2025 Bhuwan Thapa Invoice System
+</footer>
+
+<!-- ✅ Dark Mode Script -->
+<script>
+    const toggle = document.getElementById('theme-toggle');
+    const htmlEl = document.documentElement; // <html> element
+
+    // Load theme from localStorage
+    if (localStorage.getItem('theme') === 'dark') {
+        htmlEl.classList.add('dark');
+        toggle.innerText = '☀ Light Mode';
+    } else {
+        htmlEl.classList.remove('dark');
+        toggle.innerText = '🌙 Dark Mode';
+    }
+
+    toggle.addEventListener('click', () => {
+        if (htmlEl.classList.contains('dark')) {
+            htmlEl.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            toggle.innerText = '🌙 Dark Mode';
+        } else {
+            htmlEl.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            toggle.innerText = '☀ Light Mode';
+        }
+    });
+</script>
+
 </body>
 </html>

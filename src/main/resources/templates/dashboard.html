@@ -5,14 +5,18 @@
 <head>
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition duration-300">
 
+<!-- admin/dashboard.html -->
 <div layout:fragment="content" class="max-w-7xl mx-auto px-6 py-8">
 
     <!-- 🧑‍💼 Header with Logout & Profile Button -->
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-800">Welcome to the Admin Dashboard 👨‍💼</h2>
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Welcome to the Admin Dashboard 👨‍💼</h2>
 
         <div class="flex items-center gap-3">
             <!-- 👤 View Profile -->
@@ -31,48 +35,41 @@
         </div>
     </div>
 
-
     <!-- 👤 Profile Modal -->
     <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md relative">
-
-            <!-- ❌ Close Button -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md relative">
             <button onclick="document.getElementById('profileModal').classList.add('hidden')"
-                    class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl font-bold">
+                    class="absolute top-2 right-2 text-gray-600 dark:text-gray-300 hover:text-red-500 text-xl font-bold">
                 &times;
             </button>
 
-            <!-- 🧍 Profile Info -->
             <div class="flex items-center gap-4 mb-4">
-                <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center">
-                    <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-700 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-200" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800">Your Profile</h2>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Your Profile</h2>
                 </div>
             </div>
 
             <div class="space-y-2">
-                <p class="text-gray-700"><strong>Full Name:</strong> <span th:text="${profile.fullName}">John Doe</span></p>
-                <p class="text-gray-700"><strong>Email:</strong> <span th:text="${profile.email}">john@example.com</span></p>
-                <p class="text-gray-700"><strong>Joined:</strong> <span th:text="${profile.createdAt}">2025-07-01</span></p>
+                <p><strong>Full Name:</strong> <span th:text="${profile.fullName}">John Doe</span></p>
+                <p><strong>Email:</strong> <span th:text="${profile.email}">john@example.com</span></p>
+                <p><strong>Joined:</strong> <span th:text="${profile.createdAt}">2025-07-01</span></p>
             </div>
         </div>
     </div>
 
-
-
-
     <!-- 📊 Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white shadow-md rounded-xl p-6">
-            <h4 class="text-lg font-medium text-gray-600">🧾 Total Invoices</h4>
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+            <h4 class="text-lg font-medium text-gray-600 dark:text-gray-300">🧾 Total Invoices</h4>
             <p class="mt-2 text-4xl font-bold text-blue-600" th:text="${invoiceCount}">0</p>
         </div>
-        <div class="bg-white shadow-md rounded-xl p-6">
-            <h4 class="text-lg font-medium text-gray-600">💰 Total Amount (₹)</h4>
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+            <h4 class="text-lg font-medium text-gray-600 dark:text-gray-300">💰 Total Amount (₹)</h4>
             <p class="mt-2 text-4xl font-bold text-green-600"
                th:text="|₹${T(java.lang.String).format('%.2f', totalAmount)}|">₹0.00</p>
         </div>
@@ -91,10 +88,10 @@
     </div>
 
     <!-- 🕒 Recent Invoices -->
-    <div class="bg-white shadow-md rounded-xl overflow-x-auto">
-        <h3 class="text-xl font-bold text-gray-800 px-6 pt-6 pb-2">🕒 Recent Invoices</h3>
-        <table class="min-w-full text-sm text-left text-gray-700">
-            <thead class="bg-gray-100 text-xs uppercase text-gray-600">
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-x-auto">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white px-6 pt-6 pb-2">🕒 Recent Invoices</h3>
+        <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-200">
+            <thead class="bg-gray-100 dark:bg-gray-700 text-xs uppercase text-gray-600 dark:text-gray-300">
             <tr>
                 <th class="px-6 py-3"># Invoice</th>
                 <th class="px-6 py-3">👤 Client</th>
@@ -105,27 +102,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="inv : ${recentInvoices}" class="border-t hover:bg-gray-50">
-                <td class="px-6 py-4 font-semibold text-blue-600" th:text="${inv.invoiceNumber}">INV-001</td>
+            <tr th:each="inv : ${recentInvoices}" class="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-6 py-4 font-semibold text-blue-600 dark:text-blue-400" th:text="${inv.invoiceNumber}">INV-001</td>
                 <td class="px-6 py-4" th:text="${inv.clientName}">Client</td>
                 <td class="px-6 py-4" th:text="${inv.invoiceDate}">2025-06-28</td>
-                <td class="px-6 py-4 text-gray-800"
-                    th:text="|₹${T(java.lang.String).format('%.2f', inv.subTotal)}|">₹1000.00</td>
-                <td class="px-6 py-4 text-green-700 font-medium"
+                <td class="px-6 py-4" th:text="|₹${T(java.lang.String).format('%.2f', inv.subTotal)}|">₹1000.00</td>
+                <td class="px-6 py-4 text-green-700 dark:text-green-400 font-medium"
                     th:text="|₹${T(java.lang.String).format('%.2f', inv.totalAmount)}|">₹1180.00</td>
                 <td class="px-6 py-4">
                     <a th:href="@{'/invoices/' + ${inv.id} + '/download'}"
                        target="_blank"
-                       class="text-indigo-600 hover:underline font-medium">📄 PDF</a>
+                       class="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">📄 PDF</a>
                 </td>
             </tr>
             <tr th:if="${recentInvoices == null or recentInvoices.isEmpty()}">
-                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No recent invoices available 💤</td>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No recent invoices available 💤</td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
 
 </body>
 </html>

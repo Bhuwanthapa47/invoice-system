@@ -2,69 +2,80 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Register - Invoice System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col justify-center items-center px-4">
 
-<div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
 
-    <form th:action="@{/register}" th:object="${user}" method="post" class="space-y-4">
+<!-- 📝 Register Card -->
+<div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 w-full max-w-md transition-all duration-300">
+    <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">📝 Create Account</h2>
 
-        <!-- 👤 Full Name -->
+    <form th:action="@{/register}" th:object="${user}" method="post" class="space-y-5">
+
+        <!-- Full Name -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Full Name</label>
+            <label class="block text-sm font-medium">👤 Full Name</label>
             <input type="text" th:field="*{fullName}" placeholder="Enter your full name" required
-                   class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none"/>
+                   class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600
+                   focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
 
-        <!-- 📧 Email -->
+        <!-- Email -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <label class="block text-sm font-medium">📧 Email</label>
             <input type="email" th:field="*{email}" placeholder="Enter your email" required
-                   class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none"/>
+                   class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600
+                   focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
 
-        <!-- 👤 Username -->
+        <!-- Username -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Username</label>
+            <label class="block text-sm font-medium">👤 Username</label>
             <input type="text" th:field="*{username}" placeholder="Enter username" required
-                   class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none"/>
+                   class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600
+                   focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
 
-        <!-- 🔒 Password -->
+        <!-- Password -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <label class="block text-sm font-medium">🔒 Password</label>
             <input type="password" th:field="*{password}" placeholder="Enter password" required
-                   class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none"/>
+                   class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600
+                   focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
 
-        <!-- 🛡 Role -->
+        <!-- Role -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Role</label>
+            <label class="block text-sm font-medium">🛡 Role</label>
             <select th:field="*{role}" required
-                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    class="w-full px-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600
+                    focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">-- Select Role --</option>
                 <option value="USER">User</option>
                 <option value="ADMIN">Admin</option>
             </select>
         </div>
 
-        <!-- ✅ Submit -->
+        <!-- Register Button -->
         <div>
             <button type="submit"
                     class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Register
+                ✅ Register
             </button>
         </div>
     </form>
 
-
-    <p class="text-sm text-center text-gray-600 mt-6">
+    <p class="text-sm text-center mt-6 text-gray-600 dark:text-gray-300">
         Already have an account?
-        <a th:href="@{/login}" class="text-blue-600 hover:underline font-medium">Login here</a>
+        <a th:href="@{/login}" class="text-blue-500 hover:underline font-medium">Login here</a>
     </p>
 </div>
 
