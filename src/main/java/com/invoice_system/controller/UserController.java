@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -178,30 +179,31 @@ public class UserController {
 
         List<Invoice> invoices;
 
+        // 🔍 Search by client name
         if (search != null && !search.isEmpty()) {
             invoices = invoiceRepository.findByUserUsernameAndClientNameContainingIgnoreCase(username, search);
         } else {
             invoices = invoiceRepository.findByUserUsername(username);
         }
 
-        // ✅ Filter by status if provided
+        // 🟡 Safe Status Filter
         if (status != null && !status.isBlank()) {
             try {
                 InvoiceStatus selectedStatus = InvoiceStatus.valueOf(status.trim().toUpperCase());
                 invoices = invoices.stream()
-                        .filter(inv -> inv.getStatus() == selectedStatus)
-                        .toList();
-                model.addAttribute("selectedStatus", status);
+                        .filter(inv -> selectedStatus.equals(inv.getStatus()))
+                        .collect(Collectors.toList()); // ✅ MUTABLE list
+                model.addAttribute("selectedStatus", selectedStatus.name());
             } catch (IllegalArgumentException e) {
-                // Log this if needed
-                model.addAttribute("selectedStatus", ""); // fallback
+                e.printStackTrace(); // Optional logging
+                model.addAttribute("selectedStatus", "");
             }
         } else {
             model.addAttribute("selectedStatus", "");
         }
 
 
-        // ✅ Sort based on date
+        // 📅 Sort by invoice date
         if ("asc".equalsIgnoreCase(sortOrder)) {
             invoices.sort(Comparator.comparing(Invoice::getInvoiceDate));
         } else {
@@ -217,8 +219,6 @@ public class UserController {
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("search", search);
         model.addAttribute("sortOrder", sortOrder);
-
-        // ✅ Send all status values to Thymeleaf
         model.addAttribute("statusValues", InvoiceStatus.values());
 
         return "user/dashboard";
