@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Your Invoices</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Your Invoices</h2>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Invoice #</th>
+            <th>Client Name</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Download</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="invoice : ${invoices}">
+            <td th:text="${invoice.invoiceNumber}">INV-001</td>
+            <td th:text="${invoice.clientName}">John Doe</td>
+            <td th:text="${invoice.amount}">1000.00</td>
+            <td th:text="${invoice.invoiceDate}">2025-06-27</td>
+            <td>
+                <a th:href="@{'/user/invoices/' + ${invoice.id} + '/download'}" target="_blank">
+                    Download PDF
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

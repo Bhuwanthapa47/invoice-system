@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Create Invoice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function addItemRow() {
+            const container = document.getElementById("items-container");
+            const index = container.children.length;
+
+            const row = document.createElement("div");
+            row.className = "flex flex-wrap gap-3 items-center mb-3";
+            row.innerHTML = `
+                <input type="text" name="items[${index}].itemName" placeholder="Item Name" required
+                       class="w-1/4 p-2 border rounded-md" />
+                <input type="number" name="items[${index}].quantity" placeholder="Qty" min="1" required
+                       class="w-1/6 p-2 border rounded-md" />
+                <input type="number" name="items[${index}].unitPrice" placeholder="Unit Price" min="0" step="0.01" required
+                       class="w-1/4 p-2 border rounded-md" />
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-500 text-xl">❌</button>
+            `;
+            container.appendChild(row);
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+
+<div layout:fragment="content" class="max-w-4xl mx-auto mt-10 bg-white shadow-md rounded-lg p-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">📝 Create New Invoice</h2>
+
+    <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <p th:text="${error}"></p>
+    </div>
+    <!-- 🔙 Back to Admin Dashboard -->
+    <div class="flex justify-end mb-4">
+        <a th:href="@{/dashboard}" class="inline-flex items-center text-blue-600 hover:underline text-sm font-medium">
+            ← Back to Admin Dashboard
+        </a>
+    </div>
+
+
+    <form th:action="@{/invoices/create}" method="post" class="space-y-6">
+
+        <!-- Invoice Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-gray-700 font-medium">Invoice Number</label>
+                <input type="text" name="invoiceNumber" required class="w-full mt-1 p-2 border rounded-md" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium">Client Name</label>
+                <input type="text" name="clientName" required class="w-full mt-1 p-2 border rounded-md" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium">GST Percentage</label>
+                <input type="number" name="gstPercentage" step="0.01" required class="w-full mt-1 p-2 border rounded-md" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium">Invoice Date</label>
+                <input type="date" name="invoiceDate" required class="w-full mt-1 p-2 border rounded-md" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium">Assign to User</label>
+                <select name="username" required class="w-full mt-1 p-2 border rounded-md">
+                    <option value="">-- Select User --</option>
+                    <option th:each="u : ${users}" th:value="${u.username}" th:text="${u.username}"></option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium">Invoice Status</label>
+                <select id="status" name="status" required class="w-full mt-1 p-2 border rounded-md">
+                    <option value="UNPAID">Unpaid</option>
+                    <option value="PAID">Paid</option>
+                    <option value="OVERDUE">Overdue</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Line Items -->
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">📦 Line Items</h3>
+            <div id="items-container" class="space-y-3"></div>
+
+            <button type="button" onclick="addItemRow()"
+                    class="mt-3 inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600">
+                ➕ Add Item
+            </button>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-right">
+            <button type="submit"
+                    class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition">
+                💾 Save Invoice
+            </button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>
