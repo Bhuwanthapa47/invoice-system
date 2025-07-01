@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -23,6 +24,13 @@ public class PDFGeneratorService {
             document.add(new Paragraph("Invoice Number: " + invoice.getInvoiceNumber()));
             document.add(new Paragraph("Client Name: " + invoice.getClientName()));
             document.add(new Paragraph("Invoice Date: " + invoice.getInvoiceDate()));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+
+            if (invoice.getDueDate() != null) {
+                document.add(new Paragraph("Due Date: " + invoice.getDueDate().format(formatter)));
+            }
+
+
             document.add(new Paragraph(" "));
 
             // 🧾 Line Items

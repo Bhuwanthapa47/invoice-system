@@ -24,6 +24,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -221,13 +222,16 @@ public class UserController {
         // ⏰ Payment Due Reminder: Invoices due within next 3 days
         LocalDate today = LocalDate.now();
         LocalDate in3Days = today.plusDays(3);
-        List<Invoice> dueSoon = invoices.stream()
+        Set<Long> dueSoonInvoiceIds = invoices.stream()
                 .filter(i -> i.getDueDate() != null &&
                         !i.getDueDate().isBefore(today) &&
                         !i.getDueDate().isAfter(in3Days) &&
                         i.getStatus() != InvoiceStatus.PAID)
-                .collect(Collectors.toList());
-        model.addAttribute("dueSoonCount", dueSoon.size());
+                .map(Invoice::getId)
+                .collect(Collectors.toSet());
+
+        model.addAttribute("dueSoonInvoiceIds", dueSoonInvoiceIds);
+
 
         // 📦 Model attributes
         model.addAttribute("username", username);
