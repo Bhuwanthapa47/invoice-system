@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -166,4 +167,8 @@ public class InvoiceController {
 
         return ResponseEntity.ok(summary);
     }
+
+
+
+
 }

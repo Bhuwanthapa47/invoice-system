@@ -11,8 +11,8 @@
 <div layout:fragment="content" class="max-w-7xl mx-auto p-6">
 
     <!-- 👋 Greeting -->
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-800">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-4xl font-bold text-gray-800 tracking-wide">
             Welcome, <span class="text-blue-600" th:text="${#authentication.name}">User</span> 👋
         </h2>
         <form th:action="@{/logout}" method="post">
@@ -23,48 +23,64 @@
         </form>
     </div>
 
-    <!-- 🔍 Search + Sort + Status -->
-    <form th:action="@{/user/invoice-page}" method="get" class="flex flex-wrap gap-4 mb-6 items-end">
-        <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-gray-700">🔍 Search</label>
-            <input type="text" name="search" th:value="${search}" placeholder="Search by client name"
-                   class="w-full mt-1 px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-        </div>
-        <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-gray-700">🔃 Sort</label>
-            <select name="sort" class="w-full mt-1 px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                <option value="desc" th:selected="${sortOrder == 'desc'}">📅 Newest First</option>
-                <option value="asc" th:selected="${sortOrder == 'asc'}">📂 Oldest First</option>
-            </select>
-        </div>
-        <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-gray-700">📌 Status</label>
-            <select name="status" class="w-full mt-1 px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                <option value="">All Statuses</option>
-                <th:block th:each="status : ${statusValues}">
-                    <option th:if="${status.name() != 'CANCELLED' and status.name() != 'DRAFT'}"
-                            th:value="${status.name()}"
-                            th:text="${status.name()}"
-                            th:selected="${selectedStatus == status.name()}">
-                    </option>
-                </th:block>
-            </select>
-        </div>
-        <div class="mt-5">
-            <button type="submit"
-                    class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-md hover:bg-blue-700 transition duration-200">
-                🎯 Apply
-            </button>
-        </div>
-    </form>
 
 
-    <!-- ⚠ Status Filter Error -->
-    <div th:if="${statusError}" class="text-red-500 text-sm mb-4">
-        <p th:text="${statusError}"></p>
+    <!-- 🔍 Filters (Refined Layout) -->
+    <div class="bg-white shadow rounded-xl px-6 py-4 mb-8">
+        <form th:action="@{/user/invoice-page}" method="get" class="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-4">
+
+            <!-- 🔍 Search -->
+            <div class="flex-1">
+                <label class="text-sm font-medium text-gray-600 flex items-center gap-1 mb-1">
+                    <span>🔍</span> Search
+                </label>
+                <input type="text" name="search" th:value="${search}" placeholder="Client name"
+                       class="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"/>
+            </div>
+
+            <!-- 🔃 Sort -->
+            <div class="flex-1">
+                <label class="text-sm font-medium text-gray-600 flex items-center gap-1 mb-1">
+                    <span>🔁</span> Sort
+                </label>
+                <select name="sort"
+                        class="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="desc" th:selected="${sortOrder == 'desc'}">📅 Newest First</option>
+                    <option value="asc" th:selected="${sortOrder == 'asc'}">📂 Oldest First</option>
+                </select>
+            </div>
+
+            <!-- 📌 Status -->
+            <div class="flex-1">
+                <label class="text-sm font-medium text-gray-600 flex items-center gap-1 mb-1">
+                    <span>📌</span> Status
+                </label>
+                <select name="status"
+                        class="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Statuses</option>
+                    <th:block th:each="status : ${statusValues}">
+                        <option th:if="${status.name() != 'CANCELLED' and status.name() != 'DRAFT'}"
+                                th:value="${status.name()}"
+                                th:text="${status.name()}"
+                                th:selected="${selectedStatus == status.name()}">
+                        </option>
+                    </th:block>
+                </select>
+            </div>
+
+            <!-- 🎯 Apply Button -->
+            <div class="sm:w-auto w-full">
+                <button type="submit"
+                        class="w-full sm:w-auto bg-blue-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                    🎯 Apply
+                </button>
+            </div>
+        </form>
     </div>
 
-    <!-- 📊 Summary -->
+
+
+    <!-- 📊 Total Summary -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         <div class="bg-white shadow rounded-xl p-6">
             <h4 class="text-lg font-semibold text-gray-700">🧾 Total Invoices</h4>
@@ -105,17 +121,37 @@
                     <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-800"
                           th:text="${inv.status}">DRAFT</span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 space-x-2">
                     <a th:href="@{'/user/invoices/' + ${inv.id}}"
-                       class="text-indigo-600 hover:underline mr-4">👁 View</a>
+                       class="text-indigo-600 hover:underline">👁 View</a>
                     <a th:href="@{'/user/invoices/' + ${inv.id} + '/download'}" target="_blank"
                        class="text-green-600 hover:underline">📥 Download</a>
                 </td>
             </tr>
             </tbody>
         </table>
+    </div><br><br>
+
+    <!-- 🧮 Quick Status Summary -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-5 flex justify-between items-center">
+            <div class="text-green-600 text-xl font-medium">✅ Paid</div>
+            <div class="text-2xl font-bold text-green-600" th:text="${paidCount}">0</div>
+        </div>
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-5 flex justify-between items-center">
+            <div class="text-yellow-500 text-xl font-medium">💸 Unpaid</div>
+            <div class="text-2xl font-bold text-yellow-600" th:text="${unpaidCount}">0</div>
+        </div>
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-5 flex justify-between items-center">
+            <div class="text-red-500 text-xl font-medium">⏰ Overdue</div>
+            <div class="text-2xl font-bold text-red-600" th:text="${overdueCount}">0</div>
+        </div>
     </div>
+
+
 </div>
+
+
 
 </body>
 </html>

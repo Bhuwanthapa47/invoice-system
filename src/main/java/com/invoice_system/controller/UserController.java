@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayInputStream;
 import java.security.Principal;
@@ -192,16 +193,15 @@ public class UserController {
                 InvoiceStatus selectedStatus = InvoiceStatus.valueOf(status.trim().toUpperCase());
                 invoices = invoices.stream()
                         .filter(inv -> selectedStatus.equals(inv.getStatus()))
-                        .collect(Collectors.toList()); // ✅ MUTABLE list
+                        .collect(Collectors.toList());
                 model.addAttribute("selectedStatus", selectedStatus.name());
             } catch (IllegalArgumentException e) {
-                e.printStackTrace(); // Optional logging
+                e.printStackTrace();
                 model.addAttribute("selectedStatus", "");
             }
         } else {
             model.addAttribute("selectedStatus", "");
         }
-
 
         // 📅 Sort by invoice date
         if ("asc".equalsIgnoreCase(sortOrder)) {
@@ -210,9 +210,14 @@ public class UserController {
             invoices.sort(Comparator.comparing(Invoice::getInvoiceDate).reversed());
         }
 
+        // 💰 Total & Status Counts
         double totalAmount = invoices.stream()
                 .mapToDouble(Invoice::getTotalAmount)
                 .sum();
+
+        long paidCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.PAID).count();
+        long unpaidCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.UNPAID).count();
+
 
         model.addAttribute("username", username);
         model.addAttribute("invoices", invoices);
@@ -221,8 +226,13 @@ public class UserController {
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("statusValues", InvoiceStatus.values());
 
+        model.addAttribute("paidCount", paidCount);
+        model.addAttribute("unpaidCount", unpaidCount);
+
+
         return "user/dashboard";
     }
+
 
 
     @GetMapping("/user/invoices/{id}")
@@ -238,11 +248,6 @@ public class UserController {
                 })
                 .orElse("error/403"); // or redirect to access denied
     }
-
-
-
-
-
 
 
 }

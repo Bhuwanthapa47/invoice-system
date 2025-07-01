@@ -26,6 +26,8 @@ public class Invoice {
     private LocalDate invoiceDate;
     private double gstPercentage;
 
+
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference

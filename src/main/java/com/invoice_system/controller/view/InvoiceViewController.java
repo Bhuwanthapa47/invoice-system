@@ -29,12 +29,14 @@ public class InvoiceViewController {
     private final UserRepository userRepository;
     private final PDFGeneratorService pdfGeneratorService;
 
+
     public InvoiceViewController(InvoiceRepository invoiceRepository,
                                  UserRepository userRepository,
                                  PDFGeneratorService pdfGeneratorService) {
         this.invoiceRepository = invoiceRepository;
         this.userRepository = userRepository;
         this.pdfGeneratorService = pdfGeneratorService;
+
     }
 
     // 🔹 List invoices (Admin & User)
@@ -184,4 +186,6 @@ public class InvoiceViewController {
         }
         return "redirect:/invoices";
     }
+
+
 }
