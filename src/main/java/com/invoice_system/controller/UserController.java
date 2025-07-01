@@ -7,6 +7,7 @@ import com.invoice_system.model.InvoiceStatus;
 import com.invoice_system.model.User;
 import com.invoice_system.repository.InvoiceRepository;
 import com.invoice_system.repository.UserRepository;
+import com.invoice_system.service.InvoiceService;
 import com.invoice_system.service.PDFGeneratorService;
 import com.invoice_system.service.UserService;
 
@@ -35,6 +36,7 @@ public class UserController {
     private final InvoiceRepository invoiceRepository;
     private final PDFGeneratorService pdfGeneratorService;
     private final UserService userService;
+    private final InvoiceService invoiceService;
 
     // 🟢 Show login page
     @GetMapping("/login")
@@ -178,6 +180,8 @@ public class UserController {
             @RequestParam(value = "sort", required = false, defaultValue = "desc") String sortOrder,
             @RequestParam(value = "status", required = false) String status
     ) {
+
+        invoiceService.updateOverdueInvoices();
         String username = authentication.getName();
 
         List<Invoice> invoices;
@@ -218,6 +222,7 @@ public class UserController {
                 .sum();
         long paidCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.PAID).count();
         long unpaidCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.UNPAID).count();
+        long overdueCount = invoices.stream().filter(i -> i.getStatus() == InvoiceStatus.OVERDUE).count();
 
         // ⏰ Payment Due Reminder: Invoices due within next 3 days
         LocalDate today = LocalDate.now();
@@ -243,6 +248,7 @@ public class UserController {
 
         model.addAttribute("paidCount", paidCount);
         model.addAttribute("unpaidCount", unpaidCount);
+        model.addAttribute("overdueCount", overdueCount);
 
         return "user/dashboard";
     }

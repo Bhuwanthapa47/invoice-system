@@ -6,6 +6,6 @@ public enum InvoiceStatus {
     PAID,
     CANCELLED,
     UNPAID,
-    DRAFT // ✅ Include this if you're using it as default
+    OVERDUE, DRAFT // ✅ Include this if you're using it as default
 
 }
