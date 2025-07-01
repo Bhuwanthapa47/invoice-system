@@ -10,16 +10,60 @@
 
 <div layout:fragment="content" class="max-w-7xl mx-auto px-6 py-8">
 
-    <!-- 🧑‍💼 Header with Logout -->
+    <!-- 🧑‍💼 Header with Logout & Profile Button -->
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold text-gray-800">Welcome to the Admin Dashboard 👨‍💼</h2>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit"
-                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
-                🚪 Logout
+
+        <div class="flex items-center gap-3">
+            <!-- 👤 View Profile -->
+            <button onclick="document.getElementById('profileModal').classList.remove('hidden')"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition">
+                👤 View Profile
             </button>
-        </form>
+
+            <!-- 🚪 Logout -->
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                    🚪 Logout
+                </button>
+            </form>
+        </div>
     </div>
+
+
+    <!-- 👤 Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md relative">
+
+            <!-- ❌ Close Button -->
+            <button onclick="document.getElementById('profileModal').classList.add('hidden')"
+                    class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl font-bold">
+                &times;
+            </button>
+
+            <!-- 🧍 Profile Info -->
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">Your Profile</h2>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <p class="text-gray-700"><strong>Full Name:</strong> <span th:text="${profile.fullName}">John Doe</span></p>
+                <p class="text-gray-700"><strong>Email:</strong> <span th:text="${profile.email}">john@example.com</span></p>
+                <p class="text-gray-700"><strong>Joined:</strong> <span th:text="${profile.createdAt}">2025-07-01</span></p>
+            </div>
+        </div>
+    </div>
+
+
+
 
     <!-- 📊 Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">

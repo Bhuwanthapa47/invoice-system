@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,12 @@ public class UserController {
     private final PDFGeneratorService pdfGeneratorService;
     private final UserService userService;
     private final InvoiceService invoiceService;
+
+    // 🔒 Helper method to get the logged-in User
+    private User getLoggedInUser(Authentication authentication) {
+        return userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 
     // 🟢 Show login page
     @GetMapping("/login")
@@ -72,7 +79,7 @@ public class UserController {
     // 🟢 Dashboard for Admin
     @GetMapping("/dashboard")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public String dashboard(Model model) {
+    public String dashboard(Model model, Authentication authentication) {
         long invoiceCount = invoiceRepository.count();
         double totalAmount = invoiceRepository.findAll()
                 .stream()
@@ -80,6 +87,10 @@ public class UserController {
                 .sum();
 
         List<Invoice> recentInvoices = invoiceRepository.findTop3ByOrderByInvoiceDateDesc();
+
+        // 👤 Add admin profile
+        User admin = getLoggedInUser(authentication);
+        model.addAttribute("profile", admin);
 
         model.addAttribute("invoiceCount", invoiceCount);
         model.addAttribute("totalAmount", totalAmount);
@@ -183,6 +194,10 @@ public class UserController {
 
         invoiceService.updateOverdueInvoices();
         String username = authentication.getName();
+
+        User currentUser = getLoggedInUser(authentication);
+        model.addAttribute("profile", currentUser);
+
 
         List<Invoice> invoices;
 

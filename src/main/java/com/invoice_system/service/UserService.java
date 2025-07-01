@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class UserService {
 
@@ -29,8 +31,14 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(dto.getRole().equalsIgnoreCase("ADMIN") ? "ROLE_ADMIN" : "ROLE_USER");
 
+// 🆕 New profile fields
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user.setCreatedAt(LocalDate.now());
+
         userRepository.save(user);
         System.out.println(">> User saved: " + user.getUsername());
+
     }
 
 
